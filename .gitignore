@@ -1,0 +1,13 @@
+target/*
+.settings/*
+nb-configuration.xml
+.project
+.classpath
+.idea/
+capicom-wrapper.iml
+
+# Intellij project files
+*.iml
+*.ipr
+*.iws
+.idea/
