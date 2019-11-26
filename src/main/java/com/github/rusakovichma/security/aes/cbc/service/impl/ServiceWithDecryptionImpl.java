@@ -13,27 +13,28 @@ public class ServiceWithDecryptionImpl implements ServiceWithDecryption {
         this.crypto = new SensitiveDataCrypto(algorithm, transformation, key, vector);
     }
 
-    @Override
-    public void methodWithDecryption(String encrypted) throws BadPaddingException{
-        try {
-            crypto.decrypt(encrypted);
-        }catch(Exception ex){
-            Throwable cause = ex.getCause();
-            if (cause != null && cause instanceof BadPaddingException){
-                throw (BadPaddingException) cause;
-            }
+    private void extractAndThrowBadPadding(Exception ex) throws BadPaddingException {
+        Throwable cause = ex.getCause();
+        if (cause instanceof BadPaddingException) {
+            throw (BadPaddingException) cause;
         }
     }
 
     @Override
-    public void methodWithDecryptionWithIV(String encrypted, byte[] iv) throws BadPaddingException{
+    public void methodWithDecryption(String encrypted) throws BadPaddingException {
+        try {
+            crypto.decrypt(encrypted);
+        } catch (Exception ex) {
+            extractAndThrowBadPadding(ex);
+        }
+    }
+
+    @Override
+    public void methodWithDecryptionWithIV(String encrypted, byte[] iv) throws BadPaddingException {
         try {
             crypto.decryptWithIV(encrypted, iv);
-        }catch(Exception ex){
-            Throwable cause = ex.getCause();
-            if (cause != null && cause instanceof BadPaddingException){
-                throw (BadPaddingException) cause;
-            }
+        } catch (Exception ex) {
+            extractAndThrowBadPadding(ex);
         }
     }
 
